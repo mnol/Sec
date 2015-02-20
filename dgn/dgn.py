@@ -44,6 +44,18 @@ class Router(object):
 		soup = bs(data)
 		return soup.find('input',attrs={'name':'ssid'})['value']
 
+	def get_attached_devices(self):
+                url = '/setup.cgi?todo=nbtscan&next_file=devices.htm'
+                data = self.request(url)
+		soup = bs(data)
+		table = soup.findAll('table')[1]
+		rows = table.findAll('tr')[1:]
+		devices = {}
+		for row in rows:
+                   cols = row.findAll('td')[1:]
+                   devices[cols[0].text]=[cols[1].text,cols[2].text]
+                return devices
+
 	def firmware_version(self):
 		url = '/s_status.htm&todo=cfg_init'
 		data = self.request(url)
@@ -79,6 +91,9 @@ def main():
 	print '[+] WLAN SSID: %s' % (netgear.get_ssid())
 	print '[+] WLAN WPA Key: %s' % (netgear.get_wpa())
 	print '[+] Firmware Version: %s' % (netgear.firmware_version())
+	devices = netgear.get_attached_devices()
+	for key in devices:
+                   print '[+] Attached: %s - %s (%s)' % (devices[key][0], key, devices[key][1])
 
 if __name__ == "__main__":
 	main()
